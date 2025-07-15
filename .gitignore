@@ -1,0 +1,9 @@
+# macOS system files
+.DS_Store
+
+# Neovim backup/swap files
+*.swp
+*.swo
+
+# Lazy.nvim plugin downloads and session data
+/lazy-lock.json
