@@ -23,4 +23,18 @@ return require("lazy").setup({
     { "nvim-lua/plenary.nvim" },
 
     { "nvim-lualine/lualine.nvim" },
+
+    -- Markdown preview
+    {
+        "iamcco/markdown-preview.nvim",
+        build = "cd app && npm install",
+        ft = { "markdown" },
+        config = function()
+            vim.g.mkdp_auto_start = 0
+            vim.g.mkdp_auto_close = 1
+            vim.g.mkdp_open_to_the_world = 0
+            vim.g.mkdp_browser = ""    -- leave empty to use default browser
+            vim.g.mkdp_theme = "light" -- or "dark"
+        end,
+    },
 })
