@@ -37,4 +37,10 @@ return require("lazy").setup({
             vim.g.mkdp_theme = "light" -- or "dark"
         end,
     },
+
+    -- GitHub Copilot
+    {
+        "github/copilot.vim",
+        lazy = false,
+    }
 })

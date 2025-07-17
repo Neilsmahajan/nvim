@@ -40,3 +40,11 @@ map("n", "<leader>fc", require("telescope.builtin").commands, { desc = "Command 
 
 -- Reload config
 map("n", "<leader>rr", ":so ~/.config/nvim/init.lua<CR>", { desc = "Reload Neovim config" })
+
+-- Copilot Accept Suggestion
+vim.keymap.set("i", "<C-J>", 'copilot#Accept("<CR>")', {
+    expr = true,
+    replace_keycodes = false,
+    silent = true,
+    desc = "Accept Copilot suggestion",
+})
