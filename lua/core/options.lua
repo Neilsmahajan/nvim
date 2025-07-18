@@ -20,3 +20,19 @@ opt.signcolumn = "yes"
 opt.cursorline = true
 opt.updatetime = 250
 opt.timeoutlen = 300
+
+-- ── Language-specific indentation ──────────────────────────
+-- Any filetype in this list will use 2-space indents;
+-- everything else keeps the global 4-space setting above.
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = {
+        "javascript", "javascriptreact",
+        "typescript", "typescriptreact",
+        "json", "jsonc",
+        "css", "scss", "html", "xml", -- add/remove to taste
+    },
+    callback = function()
+        vim.opt_local.tabstop    = 2
+        vim.opt_local.shiftwidth = 2
+    end,
+})
