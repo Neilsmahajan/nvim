@@ -9,9 +9,9 @@ map("n", "<leader>w", ":w<CR>", { desc = "Save file" })
 map("n", "<leader>q", ":q<CR>", { desc = "Quit window" })
 map("n", "<leader>nh", ":nohl<CR>", { desc = "Clear highlights" })
 
--- Navigation
-map("n", "<C-d>", "<C-d>zz")
-map("n", "<C-u>", "<C-u>zz")
+-- Custom page down/up that centers the screen
+vim.keymap.set("n", "<C-j>", "<C-d>zz", { desc = "Page down & center" })
+vim.keymap.set("n", "<C-k>", "<C-u>zz", { desc = "Page up & center" })
 
 -- Insert mode
 map("i", "jk", "<Esc>", { desc = "Exit insert mode" })
