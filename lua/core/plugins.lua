@@ -24,6 +24,45 @@ return require("lazy").setup({
 
     { "nvim-lualine/lualine.nvim" },
 
+    -- ── Formatter: Prettier via conform.nvim ─────────────────────────────
+    {
+        "stevearc/conform.nvim",
+
+        -- Load as soon as you open a real file (fast startup, still lazy)
+        event = { "BufReadPre", "BufNewFile" },
+
+        opts = {
+            formatters_by_ft = {
+                javascript      = { "prettier" },
+                javascriptreact = { "prettier" },
+                typescript      = { "prettier" },
+                typescriptreact = { "prettier" },
+                json            = { "prettier" },
+                html            = { "prettier" },
+                css             = { "prettier" },
+                scss            = { "prettier" },
+                markdown        = { "prettier" }, -- add / remove as you wish
+            },
+            -- Don’t auto-format huge files (>256 KiB)
+            format_on_save = function(bufnr)
+                local ok, stat = pcall(vim.loop.fs_stat,
+                    vim.api.nvim_buf_get_name(bufnr))
+                return ok and stat and stat.size < 256 * 1024
+            end,
+        },
+
+        -- Define <leader>f *after* the plugin is available
+        config = function()
+            vim.keymap.set(
+                "n", "<leader>f",
+                function()
+                    require("conform").format({ lsp_fallback = true })
+                end,
+                { desc = "Format buffer with conform.nvim" }
+            )
+        end,
+    },
+
     -- Markdown preview
     {
         "iamcco/markdown-preview.nvim",
