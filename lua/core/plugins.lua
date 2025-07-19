@@ -77,6 +77,36 @@ return require("lazy").setup({
         end,
     },
 
+    -- ───────────────── Autopairs ──────────────────────────────
+    {
+        "windwp/nvim-autopairs",
+        event = "InsertEnter", -- load only when you start typing
+        opts = {
+            check_ts = true,   -- use Treesitter to skip quotes in comments etc.
+        },
+        config = function(_, opts)
+            local npairs = require("nvim-autopairs")
+            npairs.setup(opts)
+
+            -- If you use nvim-cmp, hook it so <CR> also inserts pairs correctly
+            local ok, cmp = pcall(require, "cmp")
+            if ok then
+                local cmp_npairs = require("nvim-autopairs.completion.cmp")
+                cmp.event:on("confirm_done", cmp_npairs.on_confirm_done())
+            end
+        end,
+    },
+
+    -- ───────────────── Auto-closing HTML / JSX tags ───────────
+    {
+        "windwp/nvim-ts-autotag",
+        event = "InsertEnter",
+        opts = {}, -- default settings are fine
+        config = function(_, opts)
+            require("nvim-ts-autotag").setup(opts)
+        end,
+    },
+
     -- GitHub Copilot
     {
         "github/copilot.vim",
