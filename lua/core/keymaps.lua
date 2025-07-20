@@ -41,6 +41,21 @@ map("n", "<leader>fc", require("telescope.builtin").commands, { desc = "Command 
 -- Reload config
 map("n", "<leader>rr", ":so ~/.config/nvim/init.lua<CR>", { desc = "Reload Neovim config" })
 
+-- Normal mode: <leader>/
+vim.keymap.set("n", "<leader>/", function()
+    require("Comment.api").toggle.linewise.current()
+end, { desc = "Toggle comment (normal)", noremap = true })
+
+-- Visual mode: <leader>/
+vim.keymap.set("v", "<leader>/", function()
+    local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
+    vim.api.nvim_feedkeys(esc, "nx", false)
+    local api = require("Comment.api")
+    local srow = vim.fn.line("'<")
+    local erow = vim.fn.line("'>")
+    api.toggle.linewise(vim.fn.visualmode(), { srow, erow })
+end, { desc = "Toggle comment (visual)", noremap = true })
+
 -- Copilot Accept Suggestion
 vim.keymap.set("i", "<Tab>", function()
     -- prefer Copilot if a suggestion is visible

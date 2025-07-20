@@ -111,5 +111,14 @@ return require("lazy").setup({
     {
         "github/copilot.vim",
         lazy = false,
+    },
+
+    -- Commenting
+    {
+        "numToStr/Comment.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("Comment").setup()
+        end,
     }
 })
