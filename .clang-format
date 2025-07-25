@@ -1,9 +1,9 @@
-# Based on LLVM style with 2-space indentation
-# This is the most commonly used C/C++ formatting standard
+# Based on LLVM style with 4-space indentation
+# Modified to match project preferences
 
 BasedOnStyle: LLVM
-IndentWidth: 2
-TabWidth: 2
+IndentWidth: 4
+TabWidth: 4
 UseTab: Never
 ColumnLimit: 100
 
