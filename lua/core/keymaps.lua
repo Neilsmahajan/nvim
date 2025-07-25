@@ -34,9 +34,24 @@ map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" })
 map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
 
 -- Telescope
-map("n", "<leader>fs", require("telescope.builtin").grep_string, { desc = "Search word under cursor" })
-map("n", "<leader>fr", require("telescope.builtin").oldfiles, { desc = "Find recent files" })
-map("n", "<leader>fc", require("telescope.builtin").commands, { desc = "Command palette" })
+map("n", "<leader>ff", function() require("telescope.builtin").find_files() end, { desc = "Find Files" })
+map("n", "<leader>fg", function() require("telescope.builtin").live_grep() end, { desc = "Live Grep" })
+map("n", "<leader>fb", function() require("telescope.builtin").buffers() end, { desc = "Find Buffers" })
+map("n", "<leader>fh", function() require("telescope.builtin").help_tags() end, { desc = "Find Help" })
+map("n", "<leader>fs", function() require("telescope.builtin").grep_string() end, { desc = "Search word under cursor" })
+map("n", "<leader>fr", function() require("telescope.builtin").oldfiles() end, { desc = "Find recent files" })
+map("n", "<leader>fc", function() require("telescope.builtin").commands() end, { desc = "Command palette" })
+
+-- Harpoon
+map("n", "<leader>a", function() require("harpoon.mark").add_file() end, { desc = "Harpoon Add File" })
+map("n", "<leader>h", function() require("harpoon.ui").toggle_quick_menu() end, { desc = "Harpoon Menu" })
+map("n", "<leader>j", function() require("harpoon.ui").nav_file(1) end, { desc = "Go to File 1" })
+map("n", "<leader>k", function() require("harpoon.ui").nav_file(2) end, { desc = "Go to File 2" })
+map("n", "<leader>l", function() require("harpoon.ui").nav_file(3) end, { desc = "Go to File 3" })
+map("n", "<leader>;", function() require("harpoon.ui").nav_file(4) end, { desc = "Go to File 4" })
+
+-- Formatting
+map("n", "<leader>f", function() require("conform").format({ lsp_fallback = true }) end, { desc = "Format buffer" })
 
 -- Reload config
 map("n", "<leader>rr", ":so ~/.config/nvim/init.lua<CR>", { desc = "Reload Neovim config" })

@@ -7,17 +7,9 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Load plugins
+-- Load plugins (this will automatically load all plugin configs)
 require("core.plugins")
 
--- (Optional) Load basic settings and keymaps here
+-- Load basic settings and keymaps
 require("core.options")
 require("core.keymaps")
--- Load plugin configs
-require("plugins.treesitter")
-require("plugins.telescope")
-require("plugins.lsp")
-require("plugins.cmp")
-require("plugins.harpoon")
-require("plugins.lualine")
-require("plugins.format")

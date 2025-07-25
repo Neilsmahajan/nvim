@@ -1,28 +1,26 @@
 -- ~/.config/nvim/lua/core/plugins.lua
 
 return require("lazy").setup({
-    -- Fuzzy Finder
-    { "nvim-telescope/telescope.nvim",   dependencies = { "nvim-lua/plenary.nvim" } },
+    -- Import plugin configurations from plugins/ directory
+    { import = "plugins" },
 
-    -- Syntax Highlighting
-    { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
-
-    -- Harpoon
-    { "ThePrimeagen/harpoon" },
-
-    -- LSP Configuration
-    { "neovim/nvim-lspconfig" },
-
-    -- Autocompletion
-    { "hrsh7th/nvim-cmp" },
-    { "hrsh7th/cmp-nvim-lsp" },
-    { "L3MON4D3/LuaSnip" },
-    { "saadparwaiz1/cmp_luasnip" },
-
+    -- Direct plugin definitions for simple plugins
     -- Useful Lua Functions
     { "nvim-lua/plenary.nvim" },
 
-    { "nvim-lualine/lualine.nvim" },
+    -- Markdown preview
+    {
+        "iamcco/markdown-preview.nvim",
+        build = "cd app && yarn install --frozen-lockfile",
+        ft = { "markdown" },
+        config = function()
+            vim.g.mkdp_auto_start        = 0
+            vim.g.mkdp_auto_close        = 1
+            vim.g.mkdp_open_to_the_world = 0
+            vim.g.mkdp_browser           = ""      -- default browser
+            vim.g.mkdp_theme             = "light" -- or "dark"
+        end,
+    },
 
     -- ── Formatter: Prettier via conform.nvim ─────────────────────────────
     {
@@ -44,38 +42,13 @@ return require("lazy").setup({
                 markdown        = { "prettier" }, -- add / remove as you wish
                 go              = { "goimports", "gofumpt" },
             },
-            -- Don’t auto-format huge files (>256 KiB)
+            -- Don't auto-format huge files (>256 KiB)
             format_on_save = function(bufnr)
                 local ok, stat = pcall(vim.loop.fs_stat,
                     vim.api.nvim_buf_get_name(bufnr))
                 return ok and stat and stat.size < 256 * 1024
             end,
         },
-
-        -- Define <leader>f *after* the plugin is available
-        config = function()
-            vim.keymap.set(
-                "n", "<leader>f",
-                function()
-                    require("conform").format({ lsp_fallback = true })
-                end,
-                { desc = "Format buffer with conform.nvim" }
-            )
-        end,
-    },
-
-    -- Markdown preview
-    {
-        "iamcco/markdown-preview.nvim",
-        build = "cd app && yarn install --frozen-lockfile",
-        ft = { "markdown" },
-        config = function()
-            vim.g.mkdp_auto_start        = 0
-            vim.g.mkdp_auto_close        = 1
-            vim.g.mkdp_open_to_the_world = 0
-            vim.g.mkdp_browser           = ""      -- default browser
-            vim.g.mkdp_theme             = "light" -- or "dark"
-        end,
     },
 
     -- ───────────────── Autopairs ──────────────────────────────
