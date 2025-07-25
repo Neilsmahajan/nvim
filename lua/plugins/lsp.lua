@@ -10,7 +10,7 @@ return {
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
         -- LSP servers to configure
-        local servers = { "lua_ls", "pyright", "ts_ls", "bashls" }
+        local servers = { "lua_ls", "pyright", "bashls" }
 
         for _, server in ipairs(servers) do
             lspconfig[server].setup({
@@ -28,6 +28,73 @@ return {
                 end,
             })
         end
+
+        -- Enhanced TypeScript/JavaScript configuration
+        lspconfig.ts_ls.setup({
+            capabilities = capabilities,
+            on_attach = function(client, bufnr)
+                -- Disable formatting since we use prettier via conform.nvim
+                client.server_capabilities.documentFormattingProvider = false
+                client.server_capabilities.documentRangeFormattingProvider = false
+                
+                -- Enable inlay hints if available
+                if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+                    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                end
+            end,
+            settings = {
+                typescript = {
+                    inlayHints = {
+                        includeInlayParameterNameHints = "all",
+                        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                        includeInlayFunctionParameterTypeHints = true,
+                        includeInlayVariableTypeHints = true,
+                        includeInlayPropertyDeclarationTypeHints = true,
+                        includeInlayFunctionLikeReturnTypeHints = true,
+                        includeInlayEnumMemberValueHints = true,
+                    },
+                },
+                javascript = {
+                    inlayHints = {
+                        includeInlayParameterNameHints = "all",
+                        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                        includeInlayFunctionParameterTypeHints = true,
+                        includeInlayVariableTypeHints = true,
+                        includeInlayPropertyDeclarationTypeHints = true,
+                        includeInlayFunctionLikeReturnTypeHints = true,
+                        includeInlayEnumMemberValueHints = true,
+                    },
+                },
+            },
+            filetypes = {
+                "javascript",
+                "javascriptreact", 
+                "typescript",
+                "typescriptreact",
+            },
+        })
+
+        -- JSON LSP with schema support
+        lspconfig.jsonls.setup({
+            capabilities = capabilities,
+            settings = {
+                json = {
+                    schemas = require("schemastore").json.schemas(),
+                    validate = { enable = true },
+                },
+            },
+        })
+
+        -- ESLint integration (if available)
+        lspconfig.eslint.setup({
+            capabilities = capabilities,
+            on_attach = function(client, bufnr)
+                vim.api.nvim_create_autocmd("BufWritePre", {
+                    buffer = bufnr,
+                    command = "EslintFixAll",
+                })
+            end,
+        })
 
         -- Special configuration for gopls
         lspconfig.gopls.setup({

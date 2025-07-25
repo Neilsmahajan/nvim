@@ -1,8 +1,6 @@
 -- ~/.config/nvim/lua/core/keymaps.lua
 
 local map = vim.keymap.set
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
 
 -- Normal mode
 map("n", "<leader>w", ":w<CR>", { desc = "Save file" })
@@ -86,6 +84,41 @@ vim.api.nvim_create_autocmd("FileType", {
         map("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, vim.tbl_extend("force", opts, { desc = "Run file tests" }))
         map("n", "<leader>ts", function() require("neotest").summary.toggle() end, vim.tbl_extend("force", opts, { desc = "Toggle test summary" }))
         map("n", "<leader>to", function() require("neotest").output.open({ enter = true }) end, vim.tbl_extend("force", opts, { desc = "Open test output" }))
+    end,
+})
+
+-- TypeScript/JavaScript specific keymaps
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+    callback = function()
+        local opts = { buffer = true }
+        
+        -- TypeScript specific commands
+        map("n", "<leader>to", ":TypescriptOrganizeImports<CR>", vim.tbl_extend("force", opts, { desc = "Organize imports" }))
+        map("n", "<leader>tr", ":TypescriptRenameFile<CR>", vim.tbl_extend("force", opts, { desc = "Rename file" }))
+        map("n", "<leader>ti", ":TypescriptAddMissingImports<CR>", vim.tbl_extend("force", opts, { desc = "Add missing imports" }))
+        map("n", "<leader>tu", ":TypescriptRemoveUnused<CR>", vim.tbl_extend("force", opts, { desc = "Remove unused imports" }))
+        map("n", "<leader>tf", ":TypescriptFixAll<CR>", vim.tbl_extend("force", opts, { desc = "Fix all issues" }))
+        map("n", "<leader>tg", ":TypescriptGoToSourceDefinition<CR>", vim.tbl_extend("force", opts, { desc = "Go to source definition" }))
+    end,
+})
+
+-- Package.json specific keymaps
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "json",
+    callback = function()
+        local opts = { buffer = true }
+        
+        -- Only for package.json files
+        if vim.fn.expand("%:t") == "package.json" then
+            map("n", "<leader>ps", function() require("package-info").show() end, vim.tbl_extend("force", opts, { desc = "Show package info" }))
+            map("n", "<leader>ph", function() require("package-info").hide() end, vim.tbl_extend("force", opts, { desc = "Hide package info" }))
+            map("n", "<leader>pt", function() require("package-info").toggle() end, vim.tbl_extend("force", opts, { desc = "Toggle package info" }))
+            map("n", "<leader>pu", function() require("package-info").update() end, vim.tbl_extend("force", opts, { desc = "Update package" }))
+            map("n", "<leader>pd", function() require("package-info").delete() end, vim.tbl_extend("force", opts, { desc = "Delete package" }))
+            map("n", "<leader>pi", function() require("package-info").install() end, vim.tbl_extend("force", opts, { desc = "Install package" }))
+            map("n", "<leader>pc", function() require("package-info").change_version() end, vim.tbl_extend("force", opts, { desc = "Change package version" }))
+        end
     end,
 })
 
