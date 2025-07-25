@@ -42,6 +42,7 @@ return require("lazy").setup({
                 css             = { "prettier" },
                 scss            = { "prettier" },
                 markdown        = { "prettier" }, -- add / remove as you wish
+                go              = { "goimports", "gofumpt" },
             },
             -- Don’t auto-format huge files (>256 KiB)
             format_on_save = function(bufnr)
