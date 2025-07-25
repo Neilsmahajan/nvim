@@ -19,7 +19,7 @@ return {
             graphql = { "prettier" },
             -- Go formatting: goimports handles imports + gofmt, gofumpt for stricter formatting
             go = { "goimports", "gofumpt" },
-            -- C/C++ formatting: using clang-format
+            -- C/C++ formatting: using clang-format with consistent 2-space indentation
             c = { "clang-format" },
             cpp = { "clang-format" },
         },

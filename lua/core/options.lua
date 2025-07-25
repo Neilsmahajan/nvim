@@ -29,7 +29,9 @@ vim.api.nvim_create_autocmd("FileType", {
         "javascript", "javascriptreact",
         "typescript", "typescriptreact",
         "json", "jsonc",
-        "css", "scss", "html", "xml", -- add/remove to taste
+        "css", "scss", "html", "xml",
+        "c", "cpp", "h", "hpp", -- C/C++ files use 2-space indentation (common standard)
+        "cmake", -- CMake files also use 2 spaces
     },
     callback = function()
         vim.opt_local.tabstop    = 2
