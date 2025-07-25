@@ -122,6 +122,57 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+-- C/C++ specific keymaps
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "c", "cpp" },
+    callback = function()
+        local opts = { buffer = true }
+        
+        -- Clangd specific commands
+        map("n", "<leader>ch", ":ClangdSwitchSourceHeader<CR>", vim.tbl_extend("force", opts, { desc = "Switch Source/Header" }))
+        map("n", "<leader>ct", ":ClangdTypeHierarchy<CR>", vim.tbl_extend("force", opts, { desc = "Type Hierarchy" }))
+        map("n", "<leader>cs", ":ClangdSymbolInfo<CR>", vim.tbl_extend("force", opts, { desc = "Symbol Info" }))
+        map("n", "<leader>cm", ":ClangdMemoryUsage<CR>", vim.tbl_extend("force", opts, { desc = "Memory Usage" }))
+        
+        -- Build and run commands
+        map("n", "<leader>cb", ":!make<CR>", vim.tbl_extend("force", opts, { desc = "Build (make)" }))
+        map("n", "<leader>cc", ":!gcc % -o %:r && ./%:r<CR>", vim.tbl_extend("force", opts, { desc = "Compile & Run (C)" }))
+        map("n", "<leader>cp", ":!g++ % -o %:r && ./%:r<CR>", vim.tbl_extend("force", opts, { desc = "Compile & Run (C++)" }))
+        map("n", "<leader>cr", ":!./%:r<CR>", vim.tbl_extend("force", opts, { desc = "Run executable" }))
+        
+        -- Debug keymaps (same as Go, but for C/C++)
+        map("n", "<leader>db", function() require("dap").toggle_breakpoint() end, vim.tbl_extend("force", opts, { desc = "Toggle breakpoint" }))
+        map("n", "<leader>dc", function() require("dap").continue() end, vim.tbl_extend("force", opts, { desc = "Continue debugging" }))
+        map("n", "<leader>ds", function() require("dap").step_over() end, vim.tbl_extend("force", opts, { desc = "Step over" }))
+        map("n", "<leader>di", function() require("dap").step_into() end, vim.tbl_extend("force", opts, { desc = "Step into" }))
+        map("n", "<leader>do", function() require("dap").step_out() end, vim.tbl_extend("force", opts, { desc = "Step out" }))
+        map("n", "<leader>dt", function() require("dap").terminate() end, vim.tbl_extend("force", opts, { desc = "Terminate debug session" }))
+        map("n", "<leader>du", function() require("dapui").toggle() end, vim.tbl_extend("force", opts, { desc = "Toggle debug UI" }))
+        
+        -- Testing keymaps
+        map("n", "<leader>tn", function() require("neotest").run.run() end, vim.tbl_extend("force", opts, { desc = "Run nearest test" }))
+        map("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, vim.tbl_extend("force", opts, { desc = "Run file tests" }))
+        map("n", "<leader>ts", function() require("neotest").summary.toggle() end, vim.tbl_extend("force", opts, { desc = "Toggle test summary" }))
+        map("n", "<leader>to", function() require("neotest").output.open({ enter = true }) end, vim.tbl_extend("force", opts, { desc = "Open test output" }))
+    end,
+})
+
+-- CMake specific keymaps
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "cmake",
+    callback = function()
+        local opts = { buffer = true }
+        
+        -- CMake commands
+        map("n", "<leader>cg", ":CMakeGenerate<CR>", vim.tbl_extend("force", opts, { desc = "CMake Generate" }))
+        map("n", "<leader>cb", ":CMakeBuild<CR>", vim.tbl_extend("force", opts, { desc = "CMake Build" }))
+        map("n", "<leader>cr", ":CMakeRun<CR>", vim.tbl_extend("force", opts, { desc = "CMake Run" }))
+        map("n", "<leader>cd", ":CMakeDebug<CR>", vim.tbl_extend("force", opts, { desc = "CMake Debug" }))
+        map("n", "<leader>cc", ":CMakeClean<CR>", vim.tbl_extend("force", opts, { desc = "CMake Clean" }))
+        map("n", "<leader>cs", ":CMakeSettings<CR>", vim.tbl_extend("force", opts, { desc = "CMake Settings" }))
+    end,
+})
+
 -- Reload config
 map("n", "<leader>rr", ":so ~/.config/nvim/init.lua<CR>", { desc = "Reload Neovim config" })
 

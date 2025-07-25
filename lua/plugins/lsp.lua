@@ -16,8 +16,9 @@ return {
             lspconfig[server].setup({
                 capabilities = capabilities,
                 on_attach = function(_, bufnr)
-                    -- Format on save for non-Go files (Go uses conform.nvim)
-                    if vim.bo[bufnr].filetype ~= "go" then
+                    -- Format on save for non-Go/C/C++ files (Go uses conform.nvim, C/C++ uses clangd)
+                    local ft = vim.bo[bufnr].filetype
+                    if ft ~= "go" and ft ~= "c" and ft ~= "cpp" then
                         vim.api.nvim_create_autocmd("BufWritePre", {
                             buffer = bufnr,
                             callback = function()
@@ -28,6 +29,36 @@ return {
                 end,
             })
         end
+
+        -- Enhanced C/C++ configuration with clangd
+        lspconfig.clangd.setup({
+            capabilities = capabilities,
+            cmd = {
+                "clangd",
+                "--background-index",
+                "--clang-tidy",
+                "--header-insertion=iwyu",
+                "--completion-style=detailed",
+                "--function-arg-placeholders",
+                "--fallback-style=llvm",
+            },
+            init_options = {
+                usePlaceholders = true,
+                completeUnimported = true,
+                clangdFileStatus = true,
+            },
+            on_attach = function(client, bufnr)
+                -- Enable inlay hints if available
+                if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+                    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                end
+                
+                -- Set up clangd specific keymaps
+                local opts = { buffer = bufnr }
+                vim.keymap.set("n", "<leader>ch", ":ClangdSwitchSourceHeader<CR>", 
+                    vim.tbl_extend("force", opts, { desc = "Switch Source/Header" }))
+            end,
+        })
 
         -- Enhanced TypeScript/JavaScript configuration
         lspconfig.ts_ls.setup({

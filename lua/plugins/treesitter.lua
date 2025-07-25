@@ -10,7 +10,9 @@ return {
                 "json", "html", "css", "markdown", "go", "gomod", "gowork", "gosum",
                 -- Enhanced web development support
                 "tsx", "scss", "yaml", "toml", "prisma", "graphql",
-                "jsdoc", "regex", "gitignore", "dockerfile"
+                "jsdoc", "regex", "gitignore", "dockerfile",
+                -- C/C++ development support
+                "c", "cpp", "cmake", "make"
             },
             highlight = {
                 enable = true,

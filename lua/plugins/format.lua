@@ -19,6 +19,9 @@ return {
             graphql = { "prettier" },
             -- Go formatting: goimports handles imports + gofmt, gofumpt for stricter formatting
             go = { "goimports", "gofumpt" },
+            -- C/C++ formatting: using clang-format
+            c = { "clang-format" },
+            cpp = { "clang-format" },
         },
         -- Run formatters **after** your FileType autocommand sets tabstop/shiftwidth,
         -- so they stay in sync with formatter defaults or your config files.
