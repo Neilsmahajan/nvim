@@ -34,7 +34,28 @@ vim.api.nvim_create_autocmd("FileType", {
         "cmake", -- CMake files also use 2 spaces
     },
     callback = function()
-        vim.opt_local.tabstop    = 2
+        vim.opt_local.tabstop     = 2
+        vim.opt_local.shiftwidth  = 2
+        vim.opt_local.softtabstop = 2  -- This helps with backspace and mixed indentation
+        vim.opt_local.expandtab   = true  -- Ensure spaces are used, not tabs
+    end,
+})
+
+-- ── Ensure Copilot uses correct indentation ──────────────────────────
+-- This autocmd runs after plugins are loaded to ensure Copilot sees the right settings
+vim.api.nvim_create_autocmd({ "FileType", "BufEnter" }, {
+    pattern = { "c", "cpp", "h", "hpp" },
+    callback = function()
+        -- Set indentation options that Copilot will read
+        vim.bo.tabstop = 2
+        vim.bo.shiftwidth = 2
+        vim.bo.softtabstop = 2
+        vim.bo.expandtab = true
+        
+        -- Also set these for the window to be extra sure
+        vim.opt_local.tabstop = 2
         vim.opt_local.shiftwidth = 2
+        vim.opt_local.softtabstop = 2
+        vim.opt_local.expandtab = true
     end,
 })
