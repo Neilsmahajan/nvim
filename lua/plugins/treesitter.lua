@@ -6,7 +6,8 @@ return {
     config = function()
         require("nvim-treesitter.configs").setup({
             ensure_installed = {
-                "lua", "vim", "bash", "python", "javascript", "typescript", "json", "html", "css", "markdown", "go"
+                "lua", "vim", "vimdoc", "bash", "python", "javascript", "typescript", 
+                "json", "html", "css", "markdown", "go", "gomod", "gowork", "gosum"
             },
             highlight = {
                 enable = true,
@@ -17,6 +18,16 @@ return {
             },
             autotag = {
                 enable = true,
+            },
+            -- Enhanced Go support
+            incremental_selection = {
+                enable = true,
+                keymaps = {
+                    init_selection = "<C-space>",
+                    node_incremental = "<C-space>",
+                    scope_incremental = false,
+                    node_decremental = "<bs>",
+                },
             },
         })
     end,

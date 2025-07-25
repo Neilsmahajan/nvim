@@ -11,10 +11,13 @@ return {
             html = { "prettier" },
             css = { "prettier" },
             scss = { "prettier" },
-            -- add others (markdown, yaml, astro…) as you like
+            markdown = { "prettier" },
+            yaml = { "prettier" },
+            -- Go formatting: goimports handles imports + gofmt, gofumpt for stricter formatting
+            go = { "goimports", "gofumpt" },
         },
-        -- Run Prettier **after** your FileType autocommand sets tabstop/shiftwidth,
-        -- so they stay in sync with Prettier's defaults or your .prettierrc.
+        -- Run formatters **after** your FileType autocommand sets tabstop/shiftwidth,
+        -- so they stay in sync with formatter defaults or your config files.
         format_on_save = function(bufnr)
             -- Disable for large files or special buffers if you wish:
             local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(bufnr))

@@ -53,6 +53,42 @@ map("n", "<leader>;", function() require("harpoon.ui").nav_file(4) end, { desc =
 -- Formatting
 map("n", "<leader>f", function() require("conform").format({ lsp_fallback = true }) end, { desc = "Format buffer" })
 
+-- Go-specific keymaps (only active in Go files)
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "go",
+    callback = function()
+        local opts = { buffer = true }
+        
+        -- Go.nvim commands
+        map("n", "<leader>gt", ":GoTest<CR>", vim.tbl_extend("force", opts, { desc = "Run Go tests" }))
+        map("n", "<leader>gtf", ":GoTestFunc<CR>", vim.tbl_extend("force", opts, { desc = "Run Go test function" }))
+        map("n", "<leader>gtp", ":GoTestPkg<CR>", vim.tbl_extend("force", opts, { desc = "Run Go test package" }))
+        map("n", "<leader>gc", ":GoCoverage<CR>", vim.tbl_extend("force", opts, { desc = "Go coverage" }))
+        map("n", "<leader>gbt", ":GoBuild<CR>", vim.tbl_extend("force", opts, { desc = "Go build" }))
+        map("n", "<leader>gr", ":GoRun<CR>", vim.tbl_extend("force", opts, { desc = "Go run" }))
+        map("n", "<leader>gi", ":GoImports<CR>", vim.tbl_extend("force", opts, { desc = "Go imports" }))
+        map("n", "<leader>gfs", ":GoFillStruct<CR>", vim.tbl_extend("force", opts, { desc = "Go fill struct" }))
+        map("n", "<leader>gie", ":GoIfErr<CR>", vim.tbl_extend("force", opts, { desc = "Go if err" }))
+        map("n", "<leader>gat", ":GoAddTag<CR>", vim.tbl_extend("force", opts, { desc = "Go add tag" }))
+        map("n", "<leader>grt", ":GoRmTag<CR>", vim.tbl_extend("force", opts, { desc = "Go remove tag" }))
+        
+        -- Debug keymaps
+        map("n", "<leader>db", function() require("dap").toggle_breakpoint() end, vim.tbl_extend("force", opts, { desc = "Toggle breakpoint" }))
+        map("n", "<leader>dc", function() require("dap").continue() end, vim.tbl_extend("force", opts, { desc = "Continue debugging" }))
+        map("n", "<leader>ds", function() require("dap").step_over() end, vim.tbl_extend("force", opts, { desc = "Step over" }))
+        map("n", "<leader>di", function() require("dap").step_into() end, vim.tbl_extend("force", opts, { desc = "Step into" }))
+        map("n", "<leader>do", function() require("dap").step_out() end, vim.tbl_extend("force", opts, { desc = "Step out" }))
+        map("n", "<leader>dt", function() require("dap").terminate() end, vim.tbl_extend("force", opts, { desc = "Terminate debug session" }))
+        map("n", "<leader>du", function() require("dapui").toggle() end, vim.tbl_extend("force", opts, { desc = "Toggle debug UI" }))
+        
+        -- Neotest keymaps
+        map("n", "<leader>tn", function() require("neotest").run.run() end, vim.tbl_extend("force", opts, { desc = "Run nearest test" }))
+        map("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, vim.tbl_extend("force", opts, { desc = "Run file tests" }))
+        map("n", "<leader>ts", function() require("neotest").summary.toggle() end, vim.tbl_extend("force", opts, { desc = "Toggle test summary" }))
+        map("n", "<leader>to", function() require("neotest").output.open({ enter = true }) end, vim.tbl_extend("force", opts, { desc = "Open test output" }))
+    end,
+})
+
 -- Reload config
 map("n", "<leader>rr", ":so ~/.config/nvim/init.lua<CR>", { desc = "Reload Neovim config" })
 

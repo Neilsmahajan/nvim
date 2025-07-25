@@ -10,21 +10,74 @@ return {
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
         -- LSP servers to configure
-        local servers = { "lua_ls", "gopls", "pyright", "ts_ls", "bashls" }
+        local servers = { "lua_ls", "pyright", "ts_ls", "bashls" }
 
         for _, server in ipairs(servers) do
             lspconfig[server].setup({
                 capabilities = capabilities,
                 on_attach = function(_, bufnr)
-                    -- Format on save
-                    vim.api.nvim_create_autocmd("BufWritePre", {
-                        buffer = bufnr,
-                        callback = function()
-                            vim.lsp.buf.format({ async = false })
-                        end,
-                    })
+                    -- Format on save for non-Go files (Go uses conform.nvim)
+                    if vim.bo[bufnr].filetype ~= "go" then
+                        vim.api.nvim_create_autocmd("BufWritePre", {
+                            buffer = bufnr,
+                            callback = function()
+                                vim.lsp.buf.format({ async = false })
+                            end,
+                        })
+                    end
                 end,
             })
         end
+
+        -- Special configuration for gopls
+        lspconfig.gopls.setup({
+            capabilities = capabilities,
+            settings = {
+                gopls = {
+                    gofumpt = true,                     -- Use gofumpt formatting
+                    codelenses = {
+                        gc_details = false,
+                        generate = true,
+                        regenerate_cgo = true,
+                        run_govulncheck = true,
+                        test = true,
+                        tidy = true,
+                        upgrade_dependency = true,
+                        vendor = true,
+                    },
+                    hints = {
+                        assignVariableTypes = true,
+                        compositeLiteralFields = true,
+                        compositeLiteralTypes = true,
+                        constantValues = true,
+                        functionTypeParameters = true,
+                        parameterNames = true,
+                        rangeVariableTypes = true,
+                    },
+                    analyses = {
+                        fieldalignment = true,
+                        nilness = true,
+                        unusedparams = true,
+                        unusedwrite = true,
+                        useany = true,
+                    },
+                    usePlaceholders = true,
+                    completeUnimported = true,
+                    staticcheck = true,
+                    directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
+                    semanticTokens = true,
+                },
+            },
+            on_attach = function(client, bufnr)
+                -- Disable gopls formatting since we use conform.nvim
+                client.server_capabilities.documentFormattingProvider = false
+                client.server_capabilities.documentRangeFormattingProvider = false
+                
+                -- Enable inlay hints if available
+                if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+                    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                end
+            end,
+        })
     end,
 }
