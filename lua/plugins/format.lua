@@ -19,9 +19,10 @@ return {
             graphql = { "prettier" },
             -- Go formatting: goimports handles imports + gofmt, gofumpt for stricter formatting
             go = { "goimports", "gofumpt" },
-            -- C/C++ formatting: using clang-format with consistent 4-space indentation
+            -- C/C++ and Arduino formatting: using clang-format with consistent 4-space indentation
             c = { "clang-format" },
             cpp = { "clang-format" },
+            arduino = { "clang-format" },
         },
         -- Run formatters **after** your FileType autocommand sets tabstop/shiftwidth,
         -- so they stay in sync with formatter defaults or your config files.

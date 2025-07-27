@@ -11,6 +11,15 @@ return {
         local cmp = require("cmp")
         local luasnip = require("luasnip")
 
+        -- Load Arduino snippets
+        vim.api.nvim_create_autocmd("FileType", {
+            pattern = "arduino",
+            callback = function()
+                require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/lua/snippets/"})
+                luasnip.add_snippets("arduino", require("snippets.arduino"))
+            end,
+        })
+
         cmp.setup({
             snippet = {
                 expand = function(args)

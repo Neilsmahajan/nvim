@@ -11,7 +11,7 @@ return {
                 -- Enhanced web development support
                 "tsx", "scss", "yaml", "toml", "prisma", "graphql",
                 "jsdoc", "regex", "gitignore", "dockerfile",
-                -- C/C++ development support
+                -- C/C++ and Arduino development support
                 "c", "cpp", "cmake", "make"
             },
             highlight = {

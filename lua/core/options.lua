@@ -26,6 +26,14 @@ if vim.fn.has("termguicolors") == 1 then
     opt.termguicolors = true
 end
 
+-- ── Arduino file type detection ──────────────────────────
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+    pattern = "*.ino",
+    callback = function()
+        vim.bo.filetype = "arduino"
+    end,
+})
+
 -- ── Language-specific indentation ──────────────────────────
 -- Any filetype in this list will use 2-space indents;
 -- everything else keeps the global 4-space setting above.
@@ -45,9 +53,9 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
--- ── C/C++ specific indentation (4 spaces) ──────────────────────────
+-- ── C/C++ and Arduino specific indentation (4 spaces) ──────────────────────────
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "c", "cpp", "h", "hpp" },
+    pattern = { "c", "cpp", "h", "hpp", "arduino" },
     callback = function()
         vim.opt_local.tabstop     = 4
         vim.opt_local.shiftwidth  = 4
@@ -59,7 +67,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -- ── Ensure Copilot uses correct indentation ──────────────────────────
 -- This autocmd runs after plugins are loaded to ensure Copilot sees the right settings
 vim.api.nvim_create_autocmd({ "FileType", "BufEnter" }, {
-    pattern = { "c", "cpp", "h", "hpp" },
+    pattern = { "c", "cpp", "h", "hpp", "arduino" },
     callback = function()
         -- Set indentation options that Copilot will read
         vim.bo.tabstop = 4

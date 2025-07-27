@@ -59,6 +59,34 @@ map("n", "<leader>ts", function()
     print("Current theme: " .. theme_name)
 end, { desc = "Show current theme" })
 
+-- Arduino project templates
+map("n", "<leader>an", function()
+    local templates = {
+        "basic.ino",
+        "blink.ino", 
+        "sensor.ino"
+    }
+    
+    vim.ui.select(templates, {
+        prompt = "Select Arduino template:",
+        format_item = function(item)
+            return item:gsub("%.ino$", "")
+        end,
+    }, function(choice)
+        if choice then
+            local template_path = vim.fn.expand("~/.config/nvim/templates/arduino/" .. choice)
+            local target_name = vim.fn.input("Enter sketch name: ", choice:gsub("%.ino$", ""))
+            if target_name and target_name ~= "" then
+                local target_path = target_name .. ".ino"
+                vim.cmd("edit " .. target_path)
+                vim.cmd("0read " .. template_path)
+                vim.cmd("normal! gg")
+                print("Created new Arduino sketch: " .. target_path)
+            end
+        end
+    end)
+end, { desc = "New Arduino sketch from template" })
+
 -- Go-specific keymaps (only active in Go files)
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "go",
@@ -162,6 +190,27 @@ vim.api.nvim_create_autocmd("FileType", {
         map("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, vim.tbl_extend("force", opts, { desc = "Run file tests" }))
         map("n", "<leader>ts", function() require("neotest").summary.toggle() end, vim.tbl_extend("force", opts, { desc = "Toggle test summary" }))
         map("n", "<leader>to", function() require("neotest").output.open({ enter = true }) end, vim.tbl_extend("force", opts, { desc = "Open test output" }))
+    end,
+})
+
+-- Arduino specific keymaps
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "arduino",
+    callback = function()
+        local opts = { buffer = true }
+        
+        -- Arduino CLI commands (defined in arduino.lua plugin)
+        -- These keymaps are set up in the plugin file now
+        
+        -- Generate compile_commands.json for better LSP support
+        map("n", "<leader>ag", function()
+            local current_dir = vim.fn.expand("%:p:h")
+            vim.cmd("!" .. vim.fn.expand("~/.config/nvim/scripts/generate_arduino_compile_commands.sh") .. " " .. current_dir)
+        end, vim.tbl_extend("force", opts, { desc = "Generate compile_commands.json" }))
+        
+        -- Clangd commands (Arduino files are C++ compatible)
+        map("n", "<leader>ch", ":ClangdSwitchSourceHeader<CR>", vim.tbl_extend("force", opts, { desc = "Switch Source/Header" }))
+        map("n", "<leader>cs", ":ClangdSymbolInfo<CR>", vim.tbl_extend("force", opts, { desc = "Symbol Info" }))
     end,
 })
 

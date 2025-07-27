@@ -30,7 +30,7 @@ return {
             })
         end
 
-        -- Enhanced C/C++ configuration with clangd
+        -- Enhanced C/C++ and Arduino configuration with clangd
         lspconfig.clangd.setup({
             capabilities = capabilities,
             cmd = {
@@ -42,6 +42,7 @@ return {
                 "--function-arg-placeholders",
                 "--fallback-style=llvm",
             },
+            filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto", "arduino" },
             init_options = {
                 usePlaceholders = true,
                 completeUnimported = true,
