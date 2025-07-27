@@ -21,9 +21,6 @@ return {
             indent = {
                 enable = true,
             },
-            autotag = {
-                enable = true,
-            },
             -- Enhanced Go support
             incremental_selection = {
                 enable = true,
