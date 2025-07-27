@@ -40,13 +40,16 @@ map("n", "<leader>fs", function() require("telescope.builtin").grep_string() end
 map("n", "<leader>fr", function() require("telescope.builtin").oldfiles() end, { desc = "Find recent files" })
 map("n", "<leader>fc", function() require("telescope.builtin").commands() end, { desc = "Command palette" })
 
--- Harpoon
-map("n", "<leader>a", function() require("harpoon.mark").add_file() end, { desc = "Harpoon Add File" })
-map("n", "<leader>h", function() require("harpoon.ui").toggle_quick_menu() end, { desc = "Harpoon Menu" })
-map("n", "<leader>j", function() require("harpoon.ui").nav_file(1) end, { desc = "Go to File 1" })
-map("n", "<leader>k", function() require("harpoon.ui").nav_file(2) end, { desc = "Go to File 2" })
-map("n", "<leader>l", function() require("harpoon.ui").nav_file(3) end, { desc = "Go to File 3" })
-map("n", "<leader>;", function() require("harpoon.ui").nav_file(4) end, { desc = "Go to File 4" })
+-- Harpoon v2
+map("n", "<leader>a", function() require("harpoon"):list():add() end, { desc = "Harpoon Add File" })
+map("n", "<leader>h", function() 
+    local harpoon = require("harpoon")
+    harpoon.ui:toggle_quick_menu(harpoon:list()) 
+end, { desc = "Harpoon Menu" })
+map("n", "<leader>j", function() require("harpoon"):list():select(1) end, { desc = "Go to File 1" })
+map("n", "<leader>k", function() require("harpoon"):list():select(2) end, { desc = "Go to File 2" })
+map("n", "<leader>l", function() require("harpoon"):list():select(3) end, { desc = "Go to File 3" })
+map("n", "<leader>;", function() require("harpoon"):list():select(4) end, { desc = "Go to File 4" })
 
 -- Formatting
 map("n", "<leader>f", function() require("conform").format({ lsp_fallback = true }) end, { desc = "Format buffer" })
