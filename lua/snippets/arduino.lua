@@ -140,6 +140,34 @@ return {
         i(2, "value"),
     }),
 
+    -- Variable declaration
+    s("int", {
+        t("int "),
+        i(1, "variable"),
+        t(" = "),
+        i(2, "0"),
+        t(";"),
+    }),
+
+    -- Const variable
+    s("const", {
+        t("const int "),
+        i(1, "VARIABLE"),
+        t(" = "),
+        i(2, "value"),
+        t(";"),
+    }),
+
+    -- While loop
+    s("while", {
+        t("while ("),
+        i(1, "condition"),
+        t(") {"),
+        t({"", "    "}),
+        i(2, "// Loop body"),
+        t({"", "}"}),
+    }),
+
     -- LED blink example
     s("blink", {
         t("#define LED_PIN 13"),
@@ -173,6 +201,50 @@ return {
         i(2, "90"),
         t(");"),
         t({"", "    delay(1000);"}),
+        t({"", "}"}),
+    }),
+
+    -- Sensor reading template
+    s("sensor", {
+        t("int sensorPin = "),
+        i(1, "A0"),
+        t(";"),
+        t({"", "int sensorValue = 0;"}),
+        t({"", ""}),
+        t({"", "void setup() {"}),
+        t({"", "    Serial.begin(9600);"}),
+        t({"", "}"}),
+        t({"", ""}),
+        t({"", "void loop() {"}),
+        t({"", "    sensorValue = analogRead(sensorPin);"}),
+        t({"", "    Serial.println(sensorValue);"}),
+        t({"", "    delay(500);"}),
+        t({"", "}"}),
+    }),
+
+    -- Button reading with debounce
+    s("button", {
+        t("const int buttonPin = "),
+        i(1, "2"),
+        t(";"),
+        t({"", "const int ledPin = "},
+        i(2, "13"),
+        t(";"),
+        t({"", ""}),
+        t({"", "int buttonState = 0;"}),
+        t({"", ""}),
+        t({"", "void setup() {"}),
+        t({"", "    pinMode(ledPin, OUTPUT);"}),
+        t({"", "    pinMode(buttonPin, INPUT);"}),
+        t({"", "}"}),
+        t({"", ""}),
+        t({"", "void loop() {"}),
+        t({"", "    buttonState = digitalRead(buttonPin);"}),
+        t({"", "    if (buttonState == HIGH) {"}),
+        t({"", "        digitalWrite(ledPin, HIGH);"}),
+        t({"", "    } else {"}),
+        t({"", "        digitalWrite(ledPin, LOW);"}),
+        t({"", "    }"}),
         t({"", "}"}),
     }),
 }

@@ -27,10 +27,13 @@ if vim.fn.has("termguicolors") == 1 then
 end
 
 -- ── Arduino file type detection ──────────────────────────
+-- Note: This is also handled in arduino.lua plugin for completeness
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
     pattern = "*.ino",
     callback = function()
         vim.bo.filetype = "arduino"
+        -- Prevent LSP from attaching to Arduino files
+        vim.b.lsp_ignore = true
     end,
 })
 

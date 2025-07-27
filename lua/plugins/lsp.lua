@@ -30,7 +30,7 @@ return {
             })
         end
 
-        -- Enhanced C/C++ and Arduino configuration with clangd
+        -- Enhanced C/C++ configuration with clangd (excluding Arduino files)
         lspconfig.clangd.setup({
             capabilities = capabilities,
             cmd = {
@@ -42,12 +42,27 @@ return {
                 "--function-arg-placeholders",
                 "--fallback-style=llvm",
             },
-            filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto", "arduino" },
+            filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" }, -- Removed "arduino" to prevent conflicts
             init_options = {
                 usePlaceholders = true,
                 completeUnimported = true,
                 clangdFileStatus = true,
             },
+            root_dir = function(fname)
+                -- Don't attach to Arduino files (.ino)
+                if fname:match("%.ino$") then
+                    return nil
+                end
+                return require("lspconfig.util").root_pattern(
+                    ".clangd",
+                    ".clang-tidy",
+                    ".clang-format",
+                    "compile_commands.json",
+                    "compile_flags.txt",
+                    "configure.ac",
+                    ".git"
+                )(fname)
+            end,
             on_attach = function(client, bufnr)
                 -- Enable inlay hints if available
                 if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
