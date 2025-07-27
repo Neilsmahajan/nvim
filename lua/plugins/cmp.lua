@@ -11,12 +11,14 @@ return {
         local cmp = require("cmp")
         local luasnip = require("luasnip")
 
-        -- Load Arduino snippets
+        -- Load Arduino snippets only when needed
         vim.api.nvim_create_autocmd("FileType", {
             pattern = "arduino",
             callback = function()
-                require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/lua/snippets/"})
-                luasnip.add_snippets("arduino", require("snippets.arduino"))
+                local ok, arduino_snippets = pcall(require, "snippets.arduino")
+                if ok and arduino_snippets then
+                    luasnip.add_snippets("arduino", arduino_snippets)
+                end
             end,
         })
 
