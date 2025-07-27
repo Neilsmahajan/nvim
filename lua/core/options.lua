@@ -12,7 +12,7 @@ opt.expandtab = true
 opt.autoindent = true
 opt.smartindent = true
 opt.wrap = false
-opt.termguicolors = false
+opt.termguicolors = true
 opt.splitright = true
 opt.splitbelow = true
 opt.scrolloff = 8
@@ -20,6 +20,11 @@ opt.signcolumn = "yes"
 opt.cursorline = true
 opt.updatetime = 250
 opt.timeoutlen = 300
+
+-- Ensure proper color support
+if vim.fn.has("termguicolors") == 1 then
+    opt.termguicolors = true
+end
 
 -- ── Language-specific indentation ──────────────────────────
 -- Any filetype in this list will use 2-space indents;
@@ -35,8 +40,8 @@ vim.api.nvim_create_autocmd("FileType", {
     callback = function()
         vim.opt_local.tabstop     = 2
         vim.opt_local.shiftwidth  = 2
-        vim.opt_local.softtabstop = 2  -- This helps with backspace and mixed indentation
-        vim.opt_local.expandtab   = true  -- Ensure spaces are used, not tabs
+        vim.opt_local.softtabstop = 2    -- This helps with backspace and mixed indentation
+        vim.opt_local.expandtab   = true -- Ensure spaces are used, not tabs
     end,
 })
 
@@ -61,7 +66,7 @@ vim.api.nvim_create_autocmd({ "FileType", "BufEnter" }, {
         vim.bo.shiftwidth = 4
         vim.bo.softtabstop = 4
         vim.bo.expandtab = true
-        
+
         -- Also set these for the window to be extra sure
         vim.opt_local.tabstop = 4
         vim.opt_local.shiftwidth = 4

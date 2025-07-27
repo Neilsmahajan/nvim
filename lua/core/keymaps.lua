@@ -51,6 +51,14 @@ map("n", "<leader>;", function() require("harpoon.ui").nav_file(4) end, { desc =
 -- Formatting
 map("n", "<leader>f", function() require("conform").format({ lsp_fallback = true }) end, { desc = "Format buffer" })
 
+-- Theme toggle
+map("n", "<leader>tt", ":ToggleTheme<CR>", { desc = "Toggle light/dark theme" })
+map("n", "<leader>ts", function() 
+    local current_bg = vim.o.background
+    local theme_name = current_bg == "dark" and "Catppuccin Mocha (Dark)" or "Catppuccin Latte (Light)"
+    print("Current theme: " .. theme_name)
+end, { desc = "Show current theme" })
+
 -- Go-specific keymaps (only active in Go files)
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "go",
