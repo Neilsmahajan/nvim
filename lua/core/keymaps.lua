@@ -126,6 +126,29 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+-- HTMX/HTML specific keymaps
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "html", "htmldjango", "templ", "php", "blade", "twig", "handlebars", "mustache" },
+    callback = function()
+        local opts = { buffer = true }
+        
+        -- Live server keymaps (if available)
+        map("n", "<leader>lo", ":LiveServerStart<CR>", vim.tbl_extend("force", opts, { desc = "Start Live Server" }))
+        map("n", "<leader>lc", ":LiveServerStop<CR>", vim.tbl_extend("force", opts, { desc = "Stop Live Server" }))
+        
+        -- HTML tag navigation
+        map("n", "<leader>hf", ":/<\\w\\+<CR>", vim.tbl_extend("force", opts, { desc = "Find next HTML tag" }))
+        map("n", "<leader>hc", ":/<\\/\\w\\+><CR>", vim.tbl_extend("force", opts, { desc = "Find next closing tag" }))
+        
+        -- HTMX specific snippets (manual insertion)
+        map("n", "<leader>hg", "ihx-get=\"\"<Left>", vim.tbl_extend("force", opts, { desc = "Insert hx-get" }))
+        map("n", "<leader>hp", "ihx-post=\"\"<Left>", vim.tbl_extend("force", opts, { desc = "Insert hx-post" }))
+        map("n", "<leader>hs", "ihx-swap=\"\"<Left>", vim.tbl_extend("force", opts, { desc = "Insert hx-swap" }))
+        map("n", "<leader>hT", "ihx-trigger=\"\"<Left>", vim.tbl_extend("force", opts, { desc = "Insert hx-trigger" }))
+        map("n", "<leader>ht", "ihx-target=\"\"<Left>", vim.tbl_extend("force", opts, { desc = "Insert hx-target" }))
+    end,
+})
+
 -- TypeScript/JavaScript specific keymaps
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "typescript", "typescriptreact", "javascript", "javascriptreact" },

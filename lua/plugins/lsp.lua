@@ -143,6 +143,52 @@ return {
             end,
         })
 
+        -- HTML Language Server configuration
+        lspconfig.html.setup({
+            capabilities = capabilities,
+            filetypes = { "html", "templ" },
+            init_options = {
+                configurationSection = { "html", "css", "javascript" },
+                embeddedLanguages = {
+                    css = true,
+                    javascript = true,
+                },
+                provideFormatter = true,
+            },
+            settings = {},
+        })
+
+        -- HTMX Language Server configuration
+        lspconfig.htmx.setup({
+            capabilities = capabilities,
+            filetypes = { 
+                "aspnetcorerazor", "astro", "astro-markdown", "blade", "clojure", "django-html", 
+                "htmldjango", "edge", "eelixir", "elixir", "ejs", "erb", "eruby", "gohtml", 
+                "gohtmltmpl", "haml", "handlebars", "hbs", "html", "htmlangular", "html-eex", 
+                "heex", "jade", "leaf", "liquid", "markdown", "mdx", "mustache", "njk", 
+                "nunjucks", "php", "razor", "slim", "twig", "javascript", "javascriptreact", 
+                "reason", "rescript", "typescript", "typescriptreact", "vue", "svelte", "templ" 
+            },
+            on_attach = function(client, bufnr)
+                -- Custom HTMX specific commands or keymaps can go here
+                vim.notify("HTMX LSP attached to " .. vim.fn.expand("%:t"), vim.log.levels.INFO)
+            end,
+        })
+
+        -- CSS Language Server configuration  
+        lspconfig.cssls.setup({
+            capabilities = capabilities,
+            filetypes = { "css", "scss", "less" },
+            init_options = {
+                provideFormatter = true,
+            },
+            settings = {
+                css = { validate = true },
+                less = { validate = true },
+                scss = { validate = true },
+            },
+        })
+
         -- Special configuration for gopls
         lspconfig.gopls.setup({
             capabilities = capabilities,

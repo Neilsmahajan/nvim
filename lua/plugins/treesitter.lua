@@ -7,10 +7,12 @@ return {
         require("nvim-treesitter.configs").setup({
             ensure_installed = {
                 "lua", "vim", "vimdoc", "bash", "python", "javascript", "typescript", 
-                "json", "html", "css", "markdown", "go", "gomod", "gowork", "gosum",
+                "json", "html", "css", "scss", "markdown", "go", "gomod", "gowork", "gosum",
                 -- Enhanced web development support
-                "tsx", "scss", "yaml", "toml", "prisma", "graphql",
+                "tsx", "yaml", "toml", "prisma", "graphql",
                 "jsdoc", "regex", "gitignore", "dockerfile",
+                -- HTMX and template support  
+                "xml", "http", "query",
                 -- C/C++ and Arduino development support
                 "c", "cpp", "cmake", "make"
             },

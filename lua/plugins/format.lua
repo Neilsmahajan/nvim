@@ -17,6 +17,8 @@ return {
             yaml = { "prettier" },
             toml = { "prettier" },
             graphql = { "prettier" },
+            -- HTMX files (treated as HTML)
+            templ = { "prettier" },
             -- Go formatting: goimports handles imports + gofmt, gofumpt for stricter formatting
             go = { "goimports", "gofumpt" },
             -- C/C++ and Arduino formatting: using clang-format with consistent 4-space indentation
