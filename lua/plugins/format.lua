@@ -2,6 +2,12 @@ return {
     "stevearc/conform.nvim",
     lazy = false, -- load at startup
     opts = {
+        formatters = {
+            -- Ensure clang-format uses 4-space indentation
+            ["clang-format"] = {
+                prepend_args = { "--style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never}" },
+            },
+        },
         formatters_by_ft = {
             javascript = { "prettier" },
             javascriptreact = { "prettier" },
