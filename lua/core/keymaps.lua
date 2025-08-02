@@ -156,12 +156,12 @@ vim.api.nvim_create_autocmd("FileType", {
         local opts = { buffer = true }
         
         -- TypeScript specific commands
-        map("n", "<leader>to", ":TypescriptOrganizeImports<CR>", vim.tbl_extend("force", opts, { desc = "Organize imports" }))
-        map("n", "<leader>tr", ":TypescriptRenameFile<CR>", vim.tbl_extend("force", opts, { desc = "Rename file" }))
-        map("n", "<leader>ti", ":TypescriptAddMissingImports<CR>", vim.tbl_extend("force", opts, { desc = "Add missing imports" }))
-        map("n", "<leader>tu", ":TypescriptRemoveUnused<CR>", vim.tbl_extend("force", opts, { desc = "Remove unused imports" }))
-        map("n", "<leader>tf", ":TypescriptFixAll<CR>", vim.tbl_extend("force", opts, { desc = "Fix all issues" }))
-        map("n", "<leader>tg", ":TypescriptGoToSourceDefinition<CR>", vim.tbl_extend("force", opts, { desc = "Go to source definition" }))
+        map("n", "<leader>to", ":TSToolsOrganizeImports<CR>", vim.tbl_extend("force", opts, { desc = "Organize imports" }))
+        map("n", "<leader>tr", ":TSToolsRenameFile<CR>", vim.tbl_extend("force", opts, { desc = "Rename file" }))
+        map("n", "<leader>ti", ":TSToolsAddMissingImports<CR>", vim.tbl_extend("force", opts, { desc = "Add missing imports" }))
+        map("n", "<leader>tu", ":TSToolsRemoveUnusedImports<CR>", vim.tbl_extend("force", opts, { desc = "Remove unused imports" }))
+        map("n", "<leader>tf", ":TSToolsFixAll<CR>", vim.tbl_extend("force", opts, { desc = "Fix all issues" }))
+        map("n", "<leader>tg", ":TSToolsGoToSourceDefinition<CR>", vim.tbl_extend("force", opts, { desc = "Go to source definition" }))
     end,
 })
 
