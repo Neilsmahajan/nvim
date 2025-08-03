@@ -9,16 +9,16 @@ return {
         -- LSP capabilities for nvim-cmp completion
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-        -- LSP servers to configure
-        local servers = { "lua_ls", "pyright", "bashls" }
+        -- LSP servers to configure with basic setup
+        local servers = { "lua_ls", "bashls" }
 
         for _, server in ipairs(servers) do
             lspconfig[server].setup({
                 capabilities = capabilities,
                 on_attach = function(_, bufnr)
-                    -- Format on save for non-Go/C/C++ files (Go uses conform.nvim, C/C++ uses clangd)
+                    -- Format on save for non-Go/C/C++/Python files (these use conform.nvim)
                     local ft = vim.bo[bufnr].filetype
-                    if ft ~= "go" and ft ~= "c" and ft ~= "cpp" then
+                    if ft ~= "go" and ft ~= "c" and ft ~= "cpp" and ft ~= "python" then
                         vim.api.nvim_create_autocmd("BufWritePre", {
                             buffer = bufnr,
                             callback = function()
@@ -29,6 +29,56 @@ return {
                 end,
             })
         end
+
+        -- Enhanced Python configuration with Pyright
+        lspconfig.pyright.setup({
+            capabilities = capabilities,
+            settings = {
+                python = {
+                    analysis = {
+                        autoSearchPaths = true,
+                        useLibraryCodeForTypes = true,
+                        diagnosticMode = "workspace", -- or "openFilesOnly"
+                        typeCheckingMode = "basic", -- or "strict", "off"
+                        autoImportCompletions = true,
+                        stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
+                        diagnosticSeverityOverrides = {
+                            reportUnusedImport = "information",
+                            reportUnusedFunction = "information",
+                            reportUnusedVariable = "information",
+                            reportGeneralTypeIssues = "warning",
+                            reportOptionalMemberAccess = "warning",
+                            reportOptionalSubscript = "warning",
+                            reportPrivateImportUsage = "warning",
+                        },
+                    },
+                    linting = {
+                        enabled = true,
+                    },
+                },
+            },
+            on_attach = function(client, bufnr)
+                -- Disable pyright formatting since we use conform.nvim with black/isort
+                client.server_capabilities.documentFormattingProvider = false
+                client.server_capabilities.documentRangeFormattingProvider = false
+                
+                -- Enable inlay hints if available
+                if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+                    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                end
+            end,
+            root_dir = function(fname)
+                return require("lspconfig.util").root_pattern(
+                    "pyproject.toml",
+                    "setup.py",
+                    "setup.cfg",
+                    "requirements.txt",
+                    "Pipfile",
+                    "pyrightconfig.json",
+                    ".git"
+                )(fname)
+            end,
+        })
 
         -- Enhanced C/C++ configuration with clangd (excluding Arduino files)
         lspconfig.clangd.setup({

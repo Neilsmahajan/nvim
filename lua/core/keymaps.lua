@@ -90,6 +90,35 @@ map("n", "<leader>an", function()
     end)
 end, { desc = "New Arduino sketch from template" })
 
+-- Python-specific keymaps (only active in Python files)
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "python",
+    callback = function()
+        local opts = { buffer = true }
+        
+        -- Python testing with neotest
+        map("n", "<leader>tn", function() require("neotest").run.run() end, vim.tbl_extend("force", opts, { desc = "Run nearest test" }))
+        map("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, vim.tbl_extend("force", opts, { desc = "Run file tests" }))
+        map("n", "<leader>ts", function() require("neotest").summary.toggle() end, vim.tbl_extend("force", opts, { desc = "Toggle test summary" }))
+        map("n", "<leader>to", function() require("neotest").output.open({ enter = true }) end, vim.tbl_extend("force", opts, { desc = "Open test output" }))
+        
+        -- Python debugging with dap
+        map("n", "<leader>db", function() require("dap").toggle_breakpoint() end, vim.tbl_extend("force", opts, { desc = "Toggle breakpoint" }))
+        map("n", "<leader>dc", function() require("dap").continue() end, vim.tbl_extend("force", opts, { desc = "Continue debugging" }))
+        map("n", "<leader>ds", function() require("dap").step_over() end, vim.tbl_extend("force", opts, { desc = "Step over" }))
+        map("n", "<leader>di", function() require("dap").step_into() end, vim.tbl_extend("force", opts, { desc = "Step into" }))
+        map("n", "<leader>do", function() require("dap").step_out() end, vim.tbl_extend("force", opts, { desc = "Step out" }))
+        map("n", "<leader>dt", function() require("dap").terminate() end, vim.tbl_extend("force", opts, { desc = "Terminate debug session" }))
+        map("n", "<leader>du", function() require("dapui").toggle() end, vim.tbl_extend("force", opts, { desc = "Toggle debug UI" }))
+        
+        -- Python-specific LSP commands
+        map("n", "<leader>po", ":PyrightOrganizeImports<CR>", vim.tbl_extend("force", opts, { desc = "Organize imports" }))
+        
+        -- Python REPL integration (Iron.nvim keymaps are defined in the plugin config)
+        -- Virtual environment selection keymaps are defined in the plugin config
+    end,
+})
+
 -- Go-specific keymaps (only active in Go files)
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "go",

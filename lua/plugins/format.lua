@@ -27,6 +27,8 @@ return {
             templ = { "prettier" },
             -- Go formatting: goimports handles imports + gofmt, gofumpt for stricter formatting
             go = { "goimports", "gofumpt" },
+            -- Python formatting: isort for imports, black for code formatting
+            python = { "isort", "black" },
             -- C/C++ and Arduino formatting: using clang-format with consistent 4-space indentation
             c = { "clang-format" },
             cpp = { "clang-format" },
