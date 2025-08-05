@@ -54,6 +54,48 @@ map("n", "<leader>;", function() require("harpoon"):list():select(4) end, { desc
 -- Formatting
 map("n", "<leader>f", function() require("conform").format({ lsp_fallback = true }) end, { desc = "Format buffer" })
 
+-- ESLint helpers
+map("n", "<leader>ef", ":EslintFixAll<CR>", { desc = "ESLint fix all" })
+map("n", "<leader>er", ":LspRestart eslint<CR>", { desc = "Restart ESLint LSP" })
+
+-- Create user command for installing ESLint dependencies
+vim.api.nvim_create_user_command("EslintInstallDeps", function()
+    local cwd = vim.fn.getcwd()
+    local package_json = cwd .. "/package.json"
+    
+    if vim.fn.filereadable(package_json) == 0 then
+        vim.notify("No package.json found in current directory", vim.log.levels.ERROR)
+        return
+    end
+    
+    -- Check if it's a Next.js project
+    local package_content = vim.fn.readfile(package_json)
+    local is_nextjs = false
+    
+    for _, line in ipairs(package_content) do
+        if line:match('"next"') then
+            is_nextjs = true
+            break
+        end
+    end
+    
+    local install_cmd
+    if is_nextjs then
+        install_cmd = "npm install --save-dev eslint-plugin-react-hooks @typescript-eslint/eslint-plugin @typescript-eslint/parser"
+    else
+        install_cmd = "npm install --save-dev eslint eslint-plugin-react-hooks"
+    end
+    
+    vim.notify("Installing ESLint dependencies...", vim.log.levels.INFO)
+    vim.fn.system(install_cmd)
+    
+    if vim.v.shell_error == 0 then
+        vim.notify("ESLint dependencies installed successfully. Restart LSP with :LspRestart", vim.log.levels.INFO)
+    else
+        vim.notify("Failed to install ESLint dependencies", vim.log.levels.ERROR)
+    end
+end, { desc = "Install missing ESLint dependencies" })
+
 -- Theme toggle
 map("n", "<leader>tt", ":ToggleTheme<CR>", { desc = "Toggle light/dark theme" })
 map("n", "<leader>ts", function() 
@@ -191,6 +233,11 @@ vim.api.nvim_create_autocmd("FileType", {
         map("n", "<leader>tu", ":TSToolsRemoveUnusedImports<CR>", vim.tbl_extend("force", opts, { desc = "Remove unused imports" }))
         map("n", "<leader>tf", ":TSToolsFixAll<CR>", vim.tbl_extend("force", opts, { desc = "Fix all issues" }))
         map("n", "<leader>tg", ":TSToolsGoToSourceDefinition<CR>", vim.tbl_extend("force", opts, { desc = "Go to source definition" }))
+        
+        -- ESLint specific commands
+        map("n", "<leader>ef", ":EslintFixAll<CR>", vim.tbl_extend("force", opts, { desc = "ESLint fix all" }))
+        map("n", "<leader>er", ":LspRestart eslint<CR>", vim.tbl_extend("force", opts, { desc = "Restart ESLint LSP" }))
+        map("n", "<leader>ei", ":EslintInstallDeps<CR>", vim.tbl_extend("force", opts, { desc = "Install ESLint dependencies" }))
     end,
 })
 

@@ -9,6 +9,8 @@ return {
         -- LSP capabilities for nvim-cmp completion
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+
+
         -- LSP servers to configure with basic setup
         local servers = { "lua_ls", "bashls" }
 
@@ -182,16 +184,13 @@ return {
             },
         })
 
-        -- ESLint integration (if available)
+        -- ESLint integration (disabled to prevent dependency errors)
+        -- Uncomment and run :EslintInstallDeps if you want ESLint support
+        --[[
         lspconfig.eslint.setup({
             capabilities = capabilities,
-            on_attach = function(client, bufnr)
-                vim.api.nvim_create_autocmd("BufWritePre", {
-                    buffer = bufnr,
-                    command = "EslintFixAll",
-                })
-            end,
         })
+        --]]
 
         -- HTML Language Server configuration
         lspconfig.html.setup({
