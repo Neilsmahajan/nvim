@@ -128,50 +128,8 @@ return {
             end,
         })
 
-        -- Enhanced TypeScript/JavaScript configuration
-        lspconfig.ts_ls.setup({
-            capabilities = capabilities,
-            on_attach = function(client, bufnr)
-                -- Disable formatting since we use prettier via conform.nvim
-                client.server_capabilities.documentFormattingProvider = false
-                client.server_capabilities.documentRangeFormattingProvider = false
-                
-                -- Enable inlay hints if available
-                if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-                    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-                end
-            end,
-            settings = {
-                typescript = {
-                    inlayHints = {
-                        includeInlayParameterNameHints = "all",
-                        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                        includeInlayFunctionParameterTypeHints = true,
-                        includeInlayVariableTypeHints = true,
-                        includeInlayPropertyDeclarationTypeHints = true,
-                        includeInlayFunctionLikeReturnTypeHints = true,
-                        includeInlayEnumMemberValueHints = true,
-                    },
-                },
-                javascript = {
-                    inlayHints = {
-                        includeInlayParameterNameHints = "all",
-                        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                        includeInlayFunctionParameterTypeHints = true,
-                        includeInlayVariableTypeHints = true,
-                        includeInlayPropertyDeclarationTypeHints = true,
-                        includeInlayFunctionLikeReturnTypeHints = true,
-                        includeInlayEnumMemberValueHints = true,
-                    },
-                },
-            },
-            filetypes = {
-                "javascript",
-                "javascriptreact", 
-                "typescript",
-                "typescriptreact",
-            },
-        })
+        -- TypeScript/JavaScript handled by typescript-tools.nvim in web-dev.lua
+        -- Removed ts_ls configuration to prevent duplicates
 
         -- JSON LSP with schema support
         lspconfig.jsonls.setup({
@@ -183,14 +141,6 @@ return {
                 },
             },
         })
-
-        -- ESLint integration (disabled to prevent dependency errors)
-        -- Uncomment and run :EslintInstallDeps if you want ESLint support
-        --[[
-        lspconfig.eslint.setup({
-            capabilities = capabilities,
-        })
-        --]]
 
         -- HTML Language Server configuration
         lspconfig.html.setup({
@@ -215,8 +165,8 @@ return {
                 "htmldjango", "edge", "eelixir", "elixir", "ejs", "erb", "eruby", "gohtml", 
                 "gohtmltmpl", "haml", "handlebars", "hbs", "html", "htmlangular", "html-eex", 
                 "heex", "jade", "leaf", "liquid", "markdown", "mdx", "mustache", "njk", 
-                "nunjucks", "php", "razor", "slim", "twig", "javascript", "javascriptreact", 
-                "reason", "rescript", "typescript", "typescriptreact", "vue", "svelte", "templ" 
+                "nunjucks", "php", "razor", "slim", "twig", "vue", "svelte", "templ" 
+                -- Removed JS/TS filetypes to prevent conflicts with typescript-tools.nvim
             },
             on_attach = function(client, bufnr)
                 -- Custom HTMX specific commands or keymaps can go here
