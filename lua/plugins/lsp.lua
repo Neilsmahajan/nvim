@@ -1,241 +1,116 @@
 -- ~/.config/nvim/lua/plugins/lsp.lua
 
 return {
-    "neovim/nvim-lspconfig",
-    dependencies = { "hrsh7th/cmp-nvim-lsp" },
-    config = function()
-        local lspconfig = require("lspconfig")
+  "neovim/nvim-lspconfig",
+  dependencies = { 
+    "hrsh7th/cmp-nvim-lsp",
+    "b0o/schemastore.nvim" -- for JSON schemas
+  },
+  config = function()
+    local lspconfig = require("lspconfig")
+    local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-        -- LSP capabilities for nvim-cmp completion
-        local capabilities = require("cmp_nvim_lsp").default_capabilities()
+    -- Helper function for common on_attach
+    local on_attach = function(client, bufnr)
+      -- Disable formatting for servers where we use conform.nvim
+      if client.name == "ts_ls" or client.name == "pyright" or client.name == "gopls" then
+        client.server_capabilities.documentFormattingProvider = false
+      end
+      
+      -- Enable inlay hints if available
+      if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+      end
+    end
 
+    -- Basic servers with minimal config
+    local basic_servers = { "lua_ls", "bashls" }
+    for _, server in ipairs(basic_servers) do
+      lspconfig[server].setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
+      })
+    end
 
+    -- Python
+    lspconfig.pyright.setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+      settings = {
+        python = {
+          analysis = {
+            autoSearchPaths = true,
+            useLibraryCodeForTypes = true,
+            typeCheckingMode = "basic",
+          },
+        },
+      },
+    })
 
-        -- LSP servers to configure with basic setup
-        local servers = { "lua_ls", "bashls" }
+    -- Go
+    lspconfig.gopls.setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+      settings = {
+        gopls = {
+          gofumpt = true,
+          usePlaceholders = true,
+          completeUnimported = true,
+        },
+      },
+    })
 
-        for _, server in ipairs(servers) do
-            lspconfig[server].setup({
-                capabilities = capabilities,
-                on_attach = function(_, bufnr)
-                    -- Format on save for non-Go/C/C++/Python files (these use conform.nvim)
-                    local ft = vim.bo[bufnr].filetype
-                    if ft ~= "go" and ft ~= "c" and ft ~= "cpp" and ft ~= "python" then
-                        vim.api.nvim_create_autocmd("BufWritePre", {
-                            buffer = bufnr,
-                            callback = function()
-                                vim.lsp.buf.format({ async = false })
-                            end,
-                        })
-                    end
-                end,
-            })
-        end
+    -- C/C++ (excluding Arduino)
+    lspconfig.clangd.setup({
+      capabilities = capabilities,
+      on_attach = function(client, bufnr)
+        on_attach(client, bufnr)
+        -- Clangd specific keymap
+        vim.keymap.set("n", "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", 
+          { buffer = bufnr, desc = "Switch Source/Header" })
+      end,
+      cmd = {
+        "clangd",
+        "--background-index",
+        "--clang-tidy",
+        "--header-insertion=iwyu",
+        "--completion-style=detailed",
+        "--function-arg-placeholders",
+      },
+      filetypes = { "c", "cpp", "objc", "objcpp" }, -- Exclude arduino
+      root_dir = function(fname)
+        -- Don't attach to Arduino files
+        if fname:match("%.ino$") then return nil end
+        return require("lspconfig.util").root_pattern(
+          "compile_commands.json", "compile_flags.txt", ".git"
+        )(fname)
+      end,
+    })
 
-        -- Enhanced Python configuration with Pyright
-        lspconfig.pyright.setup({
-            capabilities = capabilities,
-            settings = {
-                python = {
-                    analysis = {
-                        autoSearchPaths = true,
-                        useLibraryCodeForTypes = true,
-                        diagnosticMode = "workspace", -- or "openFilesOnly"
-                        typeCheckingMode = "basic", -- or "strict", "off"
-                        autoImportCompletions = true,
-                        stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
-                        diagnosticSeverityOverrides = {
-                            reportUnusedImport = "information",
-                            reportUnusedFunction = "information",
-                            reportUnusedVariable = "information",
-                            reportGeneralTypeIssues = "warning",
-                            reportOptionalMemberAccess = "warning",
-                            reportOptionalSubscript = "warning",
-                            reportPrivateImportUsage = "warning",
-                        },
-                    },
-                    linting = {
-                        enabled = true,
-                    },
-                },
-            },
-            on_attach = function(client, bufnr)
-                -- Disable pyright formatting since we use conform.nvim with black/isort
-                client.server_capabilities.documentFormattingProvider = false
-                client.server_capabilities.documentRangeFormattingProvider = false
-                
-                -- Enable inlay hints if available
-                if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-                    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-                end
-            end,
-            root_dir = function(fname)
-                return require("lspconfig.util").root_pattern(
-                    "pyproject.toml",
-                    "setup.py",
-                    "setup.cfg",
-                    "requirements.txt",
-                    "Pipfile",
-                    "pyrightconfig.json",
-                    ".git"
-                )(fname)
-            end,
-        })
+    -- JSON with schemas
+    lspconfig.jsonls.setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+      settings = {
+        json = {
+          schemas = require("schemastore").json.schemas(),
+          validate = { enable = true },
+        },
+      },
+    })
 
-        -- Enhanced C/C++ configuration with clangd (excluding Arduino files)
-        lspconfig.clangd.setup({
-            capabilities = capabilities,
-            cmd = {
-                "clangd",
-                "--background-index",
-                "--clang-tidy",
-                "--header-insertion=iwyu",
-                "--completion-style=detailed",
-                "--function-arg-placeholders",
-                "--fallback-style=llvm",
-            },
-            filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" }, -- Removed "arduino" to prevent conflicts
-            init_options = {
-                usePlaceholders = true,
-                completeUnimported = true,
-                clangdFileStatus = true,
-            },
-            root_dir = function(fname)
-                -- Don't attach to Arduino files (.ino)
-                if fname:match("%.ino$") then
-                    return nil
-                end
-                return require("lspconfig.util").root_pattern(
-                    ".clangd",
-                    ".clang-tidy",
-                    ".clang-format",
-                    "compile_commands.json",
-                    "compile_flags.txt",
-                    "configure.ac",
-                    ".git"
-                )(fname)
-            end,
-            on_attach = function(client, bufnr)
-                -- Enable inlay hints if available
-                if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-                    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-                end
-                
-                -- Set up clangd specific keymaps
-                local opts = { buffer = bufnr }
-                vim.keymap.set("n", "<leader>ch", ":ClangdSwitchSourceHeader<CR>", 
-                    vim.tbl_extend("force", opts, { desc = "Switch Source/Header" }))
-            end,
-        })
+    -- HTML
+    lspconfig.html.setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+      filetypes = { "html" },
+    })
 
-        -- TypeScript/JavaScript handled by typescript-tools.nvim in web-dev.lua
-        -- Removed ts_ls configuration to prevent duplicates
-
-        -- JSON LSP with schema support
-        lspconfig.jsonls.setup({
-            capabilities = capabilities,
-            settings = {
-                json = {
-                    schemas = require("schemastore").json.schemas(),
-                    validate = { enable = true },
-                },
-            },
-        })
-
-        -- HTML Language Server configuration
-        lspconfig.html.setup({
-            capabilities = capabilities,
-            filetypes = { "html", "templ" },
-            init_options = {
-                configurationSection = { "html", "css", "javascript" },
-                embeddedLanguages = {
-                    css = true,
-                    javascript = true,
-                },
-                provideFormatter = true,
-            },
-            settings = {},
-        })
-
-        -- HTMX Language Server configuration
-        lspconfig.htmx.setup({
-            capabilities = capabilities,
-            filetypes = { 
-                "aspnetcorerazor", "astro", "astro-markdown", "blade", "clojure", "django-html", 
-                "htmldjango", "edge", "eelixir", "elixir", "ejs", "erb", "eruby", "gohtml", 
-                "gohtmltmpl", "haml", "handlebars", "hbs", "html", "htmlangular", "html-eex", 
-                "heex", "jade", "leaf", "liquid", "markdown", "mdx", "mustache", "njk", 
-                "nunjucks", "php", "razor", "slim", "twig", "vue", "svelte", "templ" 
-                -- Removed JS/TS filetypes to prevent conflicts with typescript-tools.nvim
-            },
-            on_attach = function(client, bufnr)
-                -- Custom HTMX specific commands or keymaps can go here
-                vim.notify("HTMX LSP attached to " .. vim.fn.expand("%:t"), vim.log.levels.INFO)
-            end,
-        })
-
-        -- CSS Language Server configuration  
-        lspconfig.cssls.setup({
-            capabilities = capabilities,
-            filetypes = { "css", "scss", "less" },
-            init_options = {
-                provideFormatter = true,
-            },
-            settings = {
-                css = { validate = true },
-                less = { validate = true },
-                scss = { validate = true },
-            },
-        })
-
-        -- Special configuration for gopls
-        lspconfig.gopls.setup({
-            capabilities = capabilities,
-            settings = {
-                gopls = {
-                    gofumpt = true,                     -- Use gofumpt formatting
-                    codelenses = {
-                        gc_details = false,
-                        generate = true,
-                        regenerate_cgo = true,
-                        run_govulncheck = true,
-                        test = true,
-                        tidy = true,
-                        upgrade_dependency = true,
-                        vendor = true,
-                    },
-                    hints = {
-                        assignVariableTypes = true,
-                        compositeLiteralFields = true,
-                        compositeLiteralTypes = true,
-                        constantValues = true,
-                        functionTypeParameters = true,
-                        parameterNames = true,
-                        rangeVariableTypes = true,
-                    },
-                    analyses = {
-                        nilness = true,
-                        unusedparams = true,
-                        unusedwrite = true,
-                        useany = true,
-                    },
-                    usePlaceholders = true,
-                    completeUnimported = true,
-                    staticcheck = true,
-                    directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
-                    semanticTokens = true,
-                },
-            },
-            on_attach = function(client, bufnr)
-                -- Disable gopls formatting since we use conform.nvim
-                client.server_capabilities.documentFormattingProvider = false
-                client.server_capabilities.documentRangeFormattingProvider = false
-                
-                -- Enable inlay hints if available
-                if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-                    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-                end
-            end,
-        })
-    end,
+    -- CSS
+    lspconfig.cssls.setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+      filetypes = { "css", "scss", "less" },
+    })
+  end,
 }
