@@ -44,7 +44,7 @@ vim.filetype.add({
 
 -- Language-specific indentation
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "html", "css" },
+  pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "html", "css", "lua" },
   callback = function()
     vim.opt_local.tabstop = 2
     vim.opt_local.shiftwidth = 2
