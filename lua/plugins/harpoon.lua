@@ -1,3 +1,5 @@
+-- ~/.config/nvim/lua/plugins/harpoon.lua
+
 return {
   "ThePrimeagen/harpoon",
   branch = "harpoon2",
