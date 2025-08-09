@@ -32,6 +32,33 @@ return {
       })
     end
 
+    -- TypeScript/JavaScript
+    lspconfig.ts_ls.setup({
+      cmd = { "typescript-language-server", "--stdio" },
+      capabilities = capabilities,
+      on_attach = on_attach,
+      settings = {
+        typescript = {
+          inlayHints = {
+            includeInlayParameterNameHints = "all",
+            includeInlayFunctionParameterTypeHints = true,
+            includeInlayVariableTypeHints = true,
+            includeInlayPropertyDeclarationTypeHints = true,
+            includeInlayFunctionLikeReturnTypeHints = true,
+          },
+        },
+        javascript = {
+          inlayHints = {
+            includeInlayParameterNameHints = "all",
+            includeInlayFunctionParameterTypeHints = true,
+            includeInlayVariableTypeHints = true,
+            includeInlayPropertyDeclarationTypeHints = true,
+            includeInlayFunctionLikeReturnTypeHints = true,
+          },
+        },
+      },
+    })
+
     -- Python
     lspconfig.pyright.setup({
       capabilities = capabilities,
