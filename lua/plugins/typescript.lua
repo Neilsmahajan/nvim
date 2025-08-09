@@ -6,6 +6,8 @@ return {
   ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
   config = function()
     require("typescript-tools").setup({
+      -- Use tsserver from PATH (works with pnpm global installation)
+      tsserver_path = "tsserver",
       on_attach = function(client, bufnr)
         -- Disable formatting since we use prettier
         client.server_capabilities.documentFormattingProvider = false
