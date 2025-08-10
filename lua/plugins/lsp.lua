@@ -2,7 +2,7 @@
 
 return {
   "neovim/nvim-lspconfig",
-  dependencies = { 
+  dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     "b0o/schemastore.nvim" -- for JSON schemas
   },
@@ -25,7 +25,7 @@ return {
       if client.name == "ts_ls" or client.name == "pyright" or client.name == "gopls" then
         client.server_capabilities.documentFormattingProvider = false
       end
-      
+
       -- Enable inlay hints if available
       if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
@@ -111,7 +111,7 @@ return {
       on_attach = function(client, bufnr)
         on_attach(client, bufnr)
         -- Clangd specific keymap
-        vim.keymap.set("n", "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", 
+        vim.keymap.set("n", "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>",
           { buffer = bufnr, desc = "Switch Source/Header" })
       end,
       cmd = {
@@ -129,8 +129,8 @@ return {
         if fname:match("%.ino$") then return nil end
         -- More permissive root detection - fallback to current directory
         return require("lspconfig.util").root_pattern(
-          "compile_commands.json", 
-          "compile_flags.txt", 
+          "compile_commands.json",
+          "compile_flags.txt",
           ".clangd",
           ".git"
         )(fname) or vim.fn.getcwd()
@@ -161,6 +161,13 @@ return {
       capabilities = capabilities,
       on_attach = on_attach,
       filetypes = { "css", "scss", "less" },
+    })
+
+    -- Svelte
+    lspconfig.svelte.setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+      filetypes = { "svelte" },
     })
   end,
 }

@@ -6,9 +6,9 @@ return {
   config = function()
     require("nvim-treesitter.configs").setup({
       ensure_installed = {
-        "lua", "vim", "vimdoc", "bash", 
+        "lua", "vim", "vimdoc", "bash",
         "python", "javascript", "typescript", "tsx", "json", "html", "css",
-        "go", "c", "cpp", "arduino"
+        "go", "c", "cpp", "arduino", "svelte"
       },
       highlight = { enable = true },
       indent = { enable = true },
