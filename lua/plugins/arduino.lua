@@ -25,12 +25,14 @@ return {
     vim.api.nvim_create_autocmd("FileType", {
       pattern = "arduino",
       callback = function()
-        -- Disable LSP for Arduino files
+        local bufnr = vim.api.nvim_get_current_buf()
+        
+        -- Disable LSP for Arduino files (buffer-specific)
         vim.diagnostic.config({
           virtual_text = false,
           signs = false,
           underline = false,
-        }, vim.api.nvim_get_current_buf())
+        }, bufnr)
         
         -- Set syntax to C++ for better highlighting
         vim.cmd("set syntax=cpp")

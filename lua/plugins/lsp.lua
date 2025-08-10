@@ -7,6 +7,15 @@ return {
     "b0o/schemastore.nvim" -- for JSON schemas
   },
   config = function()
+    -- Configure diagnostics globally
+    vim.diagnostic.config({
+      virtual_text = true,
+      signs = true,
+      underline = true,
+      update_in_insert = false,
+      severity_sort = true,
+    })
+
     local lspconfig = require("lspconfig")
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
@@ -112,14 +121,19 @@ return {
         "--header-insertion=iwyu",
         "--completion-style=detailed",
         "--function-arg-placeholders",
+        "--fallback-style=llvm",
       },
-      filetypes = { "c", "cpp", "objc", "objcpp" }, -- Exclude arduino
+      filetypes = { "c", "cpp", "objc", "objcpp" },
       root_dir = function(fname)
         -- Don't attach to Arduino files
         if fname:match("%.ino$") then return nil end
+        -- More permissive root detection - fallback to current directory
         return require("lspconfig.util").root_pattern(
-          "compile_commands.json", "compile_flags.txt", ".git"
-        )(fname)
+          "compile_commands.json", 
+          "compile_flags.txt", 
+          ".clangd",
+          ".git"
+        )(fname) or vim.fn.getcwd()
       end,
     })
 

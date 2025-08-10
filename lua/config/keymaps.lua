@@ -30,6 +30,8 @@ map("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
 map("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation" })
 map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" })
 map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
+map("n", "<leader>li", "<cmd>LspInfo<cr>", { desc = "LSP info" })
+map("n", "<leader>lr", "<cmd>LspRestart<cr>", { desc = "LSP restart" })
 
 -- File explorer
 map("n", "<leader>fe", "<cmd>Ex<cr>", { desc = "File explorer" })
