@@ -22,7 +22,7 @@ return {
     -- Helper function for common on_attach
     local on_attach = function(client, bufnr)
       -- Disable formatting for servers where we use conform.nvim
-      if client.name == "ts_ls" or client.name == "pyright" or client.name == "gopls" then
+      if client.name == "ts_ls" or client.name == "pyright" or client.name == "gopls" or client.name == "svelte" then
         client.server_capabilities.documentFormattingProvider = false
       end
 
