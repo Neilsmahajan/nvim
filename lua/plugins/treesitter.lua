@@ -7,7 +7,7 @@ return {
     require("nvim-treesitter.configs").setup({
       ensure_installed = {
         "lua", "vim", "vimdoc", "bash", 
-        "python", "javascript", "typescript", "json", "html", "css",
+        "python", "javascript", "typescript", "tsx", "json", "html", "css",
         "go", "c", "cpp", "arduino"
       },
       highlight = { enable = true },
