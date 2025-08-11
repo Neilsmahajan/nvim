@@ -26,12 +26,17 @@ return {
         -- Use arrow keys for LSP navigation
         ["<Up>"] = cmp.mapping.select_prev_item(),
         ["<Down>"] = cmp.mapping.select_next_item(),
-        -- Reserve Tab for Copilot - only handle snippet jumping
+        -- Use Ctrl+n/p for completion navigation
+        ["<C-n>"] = cmp.mapping.select_next_item(),
+        ["<C-p>"] = cmp.mapping.select_prev_item(),
+        -- Tab for completion and indenting
         ["<Tab>"] = cmp.mapping(function(fallback)
-          if luasnip.expand_or_jumpable() then
+          if cmp.visible() then
+            cmp.select_next_item()
+          elseif luasnip.expand_or_jumpable() then
             luasnip.expand_or_jump()
           else
-            fallback() -- This will allow Copilot to handle Tab
+            fallback() -- Normal Tab behavior for indenting
           end
         end, { "i", "s" }),
         ["<S-Tab>"] = cmp.mapping(function(fallback)
