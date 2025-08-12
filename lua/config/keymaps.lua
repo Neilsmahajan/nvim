@@ -11,7 +11,7 @@ map("n", "<leader>nh", "<cmd>nohlsearch<cr>", { desc = "Clear highlights" })
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
-map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
+-- Removed <C-l> to avoid conflict with Copilot in insert mode
 
 -- Better page movement
 map("n", "<C-d>", "<C-d>zz", { desc = "Page down & center" })
