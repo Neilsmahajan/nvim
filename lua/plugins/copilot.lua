@@ -2,6 +2,7 @@
 
 return {
   "github/copilot.vim",
+  event = "InsertEnter",
   config = function()
     -- Enable Copilot for all file types
     vim.g.copilot_enabled = true
@@ -14,5 +15,10 @@ return {
       expr = true,
       replace_keycodes = false
     })
+    
+    -- Enable Copilot for all filetypes (WSL sometimes has issues with detection)
+    vim.g.copilot_filetypes = {
+      ["*"] = true,
+    }
   end,
 }
