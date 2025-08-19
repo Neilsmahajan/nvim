@@ -169,5 +169,15 @@ return {
       on_attach = on_attach,
       filetypes = { "svelte" },
     })
+
+    -- SQL (PostgreSQL)
+    -- Requires the Postgres Language Server (postgrestools) installed and on PATH
+    -- See: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#postgres_lsp
+    lspconfig.postgres_lsp.setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+      filetypes = { "sql" },
+      -- Uses default cmd: { "postgrestools", "lsp-proxy" }
+    })
   end,
 }

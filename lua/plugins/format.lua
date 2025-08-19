@@ -24,6 +24,7 @@ return {
         cpp = { "clang-format" },
         arduino = { "clang-format" },
         svelte = { "prettier" },
+        sql = { "pg_format", "sql-formatter" },
       },
       formatters = {
         ["clang-format"] = {
