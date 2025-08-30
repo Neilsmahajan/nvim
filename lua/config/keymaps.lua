@@ -41,7 +41,11 @@ map("n", "<leader>cf", function()
   require("conform").format({ lsp_fallback = true })
 end, { desc = "Format buffer" })
 
+-- Lazygit
+map("n", "<leader>lg", "<cmd>LazyGit<cr>", { desc = "LazyGit" })
+
 -- Language-specific keymaps
+-- Arduino
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "arduino",
   callback = function()
@@ -52,16 +56,21 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- TypeScript and JavaScript
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
   callback = function()
     local opts = { buffer = true }
-    map("n", "<leader>to", "<cmd>TSToolsOrganizeImports<cr>", vim.tbl_extend("force", opts, { desc = "Organize imports" }))
-    map("n", "<leader>ti", "<cmd>TSToolsAddMissingImports<cr>", vim.tbl_extend("force", opts, { desc = "Add missing imports" }))
-    map("n", "<leader>tu", "<cmd>TSToolsRemoveUnusedImports<cr>", vim.tbl_extend("force", opts, { desc = "Remove unused imports" }))
+    map("n", "<leader>to", "<cmd>TSToolsOrganizeImports<cr>",
+      vim.tbl_extend("force", opts, { desc = "Organize imports" }))
+    map("n", "<leader>ti", "<cmd>TSToolsAddMissingImports<cr>",
+      vim.tbl_extend("force", opts, { desc = "Add missing imports" }))
+    map("n", "<leader>tu", "<cmd>TSToolsRemoveUnusedImports<cr>",
+      vim.tbl_extend("force", opts, { desc = "Remove unused imports" }))
   end,
 })
 
+-- Go
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "go",
   callback = function()

@@ -4,10 +4,10 @@ return {
   "stevearc/conform.nvim",
   config = function()
     local conform = require("conform")
-    
+
     -- Custom clang-format configuration
     local clang_format_config = vim.fn.stdpath("config") .. "/.clang-format"
-    
+
     conform.setup({
       formatters_by_ft = {
         python = { "isort", "black" },

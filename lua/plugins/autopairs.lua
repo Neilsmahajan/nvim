@@ -6,7 +6,7 @@ return {
   config = function()
     local autopairs = require("nvim-autopairs")
     local cmp = require("cmp")
-    
+
     autopairs.setup({
       check_ts = true, -- Use treesitter for better context
       ts_config = {
