@@ -36,6 +36,11 @@ map("n", "<leader>lr", "<cmd>LspRestart<cr>", { desc = "LSP restart" })
 -- File explorer
 map("n", "<leader>fe", "<cmd>Ex<cr>", { desc = "File explorer" })
 
+-- Neo-tree (file explorer plugin) keymaps
+map("n", "<leader>nt", "<cmd>Neotree toggle<cr>", { desc = "Toggle Neo-tree file explorer" })
+map("n", "<leader>nr", "<cmd>Neotree reveal<cr>", { desc = "Reveal current file in Neo-tree" })
+map("n", "<leader>nf", "<cmd>Neotree float<cr>", { desc = "Neo-tree floating window" })
+
 -- Formatting
 map("n", "<leader>cf", function()
   require("conform").format({ lsp_fallback = true })
